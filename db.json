@@ -1,0 +1,44 @@
+{
+  "topics": [
+    {
+      "id": "01HBR78GBMJ9XYEBADYY2EENW3",
+      "author": {
+        "username": "niguem",
+        "name": "Astolfo",
+        "city": "Terehell",
+        "country": "Brasel"
+      },
+      "description": "Uma hora dessas eu hei de comprar um hamburguer de padaria na esquina",
+      "tags": [
+        "fome",
+        "pensamento",
+        "dia",
+        "hoje"
+      ],
+      "createdAt": "2023-10-02T12:54:25.396Z",
+      "active": false,
+      "likes": 29,
+      "dislikes": 0
+    },
+    {
+      "id": "01HBR92KGAPBEMDVDTG0VH4485",
+      "author": {
+        "username": "estagiario123",
+        "name": "Mara Maravilha",
+        "city": "São Paulo",
+        "country": "Brasil"
+      },
+      "description": "Entre tapas e beijos é odio é desjeo",
+      "tags": [
+        "musga",
+        "boa",
+        "qualidade",
+        "som"
+      ],
+      "createdAt": "2023-10-02T13:26:09.162Z",
+      "active": false,
+      "likes": 0,
+      "dislikes": 0
+    }
+  ]
+}
