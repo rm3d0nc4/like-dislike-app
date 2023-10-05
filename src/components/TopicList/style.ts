@@ -6,5 +6,9 @@ export const ListContainer = styled.div `
     border: 4px dashed #1F2124;
     border-radius: 10px;
     margin-top: 1rem;
-    border-
+
+    @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 `;

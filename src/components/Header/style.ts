@@ -14,6 +14,7 @@ export const Button = styled.button `
     justify-content: center;
     align-items: center;
     margin: 10px 0px;
+    max-width: 60px;
 `;
 
 export const HeaderContent = styled.div `

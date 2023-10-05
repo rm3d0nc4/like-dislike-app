@@ -1,94 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import "./App.css";
 import { Topic } from "./interfaces/topic";
 import { Header } from "./components/Header";
 import { TopicList } from "./components/TopicList";
+import { ActionType, topicStateReducer } from "./reducers/topic_reducer";
+import { TopicService } from "./providers/topic_service";
+import { Toaster } from "react-hot-toast";
 
 function App() {
-  const [topics, setTopics] = useState<Topic[]>([]);
+  const [state, dispatch] = useReducer(topicStateReducer, { topics: [] });
 
   useEffect(() => {
     (async () => {
-      
-      const response = await fetch('http://localhost:3000/topics')
-
-      const data = await response.json();
-      const topics: Topic[] = data as Topic[];
-      topics.forEach((topic) => (topic.createdAt = new Date(topic.createdAt)));
-
-      const sortedTopics = topics.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      setTopics(sortedTopics);
+      const topics = await TopicService.getTopics();
+      dispatch({ type: ActionType.Loaded, payload: { topics: topics } });
     })();
   }, []);
 
   const onHandleChangeActive = async (topic: Topic) => {
     topic.active = !topic.active;
-    const response = await fetch(`http://localhost:3000/topics/${topic.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(topic),
-    });
-
-    if (response.ok) {
-      const data: Topic = await response.json();
-      const updatedTopics = topics.map((currentTopic) => (currentTopic.id === data.id ? data : currentTopic));
-      setTopics(updatedTopics);
-    }
+    const updatedTopic = await TopicService.updateTopic(topic);
+    dispatch({ type: ActionType.Changed, payload: { topic: updatedTopic } });
   };
 
   const onHandleLikeTopic = async (topic: Topic) => {
     topic.likes += 1;
-    const response = await fetch(`http://localhost:3000/topics/${topic.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(topic),
-    });
-
-    if (response.ok) {
-      const data: Topic = await response.json();
-      const updatedTopics = topics.map((currentTopic) => (currentTopic.id === data.id ? data : currentTopic));
-      setTopics(updatedTopics);
-    }
+    const updatedTopic = await TopicService.updateTopic(topic);
+    dispatch({ type: ActionType.Changed, payload: { topic: updatedTopic } });
   };
+
   const onHandleDislikeTopic = async (topic: Topic) => {
     topic.dislikes += 1;
-    const response = await fetch(`http://localhost:3000/topics/${topic.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(topic),
-    });
-
-    if (response.ok) {
-      const data: Topic = await response.json();
-      const updatedTopics = topics.map((currentTopic) => (currentTopic.id === data.id ? data : currentTopic));
-      setTopics(updatedTopics);
-    }
+    const updatedTopic = await TopicService.updateTopic(topic);
+    dispatch({ type: ActionType.Changed, payload: { topic: updatedTopic } });
   };
 
   const onCreateTopic = async (topic: Topic) => {
-    const response = await fetch("http://localhost:3000/topics", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(topic),
-    });
-
-    if (response.ok) {
-      setTopics([topic, ...topics]);
-    }
+    const addedTopic = await TopicService.addTopic(topic);
+      dispatch({ type: ActionType.Added, payload: { topic: addedTopic } });
   };
 
   return (
     <>
+      <Toaster toastOptions={{ position: "bottom-center" }} />
       <Header onCreateTopic={onCreateTopic} />
-      <TopicList topics={topics} changeActive={onHandleChangeActive} likeTopic={onHandleLikeTopic} dislikeTopic={onHandleDislikeTopic} />
+      <TopicList
+        topics={state.topics}
+        changeActive={onHandleChangeActive}
+        likeTopic={onHandleLikeTopic}
+        dislikeTopic={onHandleDislikeTopic}
+      />
     </>
   );
 }
