@@ -1,15 +1,19 @@
-import { Topic } from "../../interfaces/topic";
+import { Topic } from "../../core/interfaces/topic";
 import { Button, Input, Label, TextLabel } from "./style";
 import { useRef } from "react";
-import { Author } from "../../interfaces/author";
+import { Author } from "../../core/interfaces/author";
 import { ulid } from "ulid";
+import { Action, ActionType } from "../../core/reducers/topic_reducer";
+import { useTopicsDispatch } from "../../core/hooks/use_topics_dispatch";
+import { TopicService } from "../../core/services/topic_service";
 
 interface TopicFormProps {
-  onCreateTopic: (topic: Topic) => void;
   setFormIsOpen: (isOpen: boolean) => void;
 }
 
-export function TopicForm({ onCreateTopic, setFormIsOpen }: TopicFormProps) {
+export function TopicForm({ setFormIsOpen }: TopicFormProps) {
+  const dispatch = useTopicsDispatch() as React.Dispatch<Action>;
+  const {addTopic} = TopicService;
   const usernameRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
@@ -42,7 +46,7 @@ export function TopicForm({ onCreateTopic, setFormIsOpen }: TopicFormProps) {
     };
     const form = event.target as HTMLFormElement;
     form.reset();
-    onCreateTopic(topic);
+    addTopic(topic).then((topic) => dispatch({ type: ActionType.Added, payload: { topic } }));
     setFormIsOpen(false);
   };
 
@@ -72,7 +76,7 @@ export function TopicForm({ onCreateTopic, setFormIsOpen }: TopicFormProps) {
         <TextLabel>Tags</TextLabel>
         <Input type="text" placeholder="separate tags for space" ref={tagsRef} />
       </Label>
-        <Button type="submit">Submit</Button>
+      <Button type="submit">Submit</Button>
     </form>
   );
 }

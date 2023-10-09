@@ -1,4 +1,4 @@
-import { Topic } from './../interfaces/topic';
+import { Topic } from '../interfaces/topic';
 
 export interface TopicState {
     topics: Topic[];
@@ -16,7 +16,7 @@ type TopicChanged = { type: ActionType.Changed; payload: { topic: Topic } };
 type TopicDeleted = { type: ActionType.Deleted; payload: { id: string } };
 type TopicsLoaded = { type: ActionType.Loaded; payload: { topics: Topic[] } };
 
-type Action = TopicAdded | TopicChanged | TopicDeleted | TopicsLoaded;
+export type Action = TopicAdded | TopicChanged | TopicDeleted | TopicsLoaded;
 
 const reducer = (state: TopicState, action: Action): TopicState => {
     switch (action.type) {

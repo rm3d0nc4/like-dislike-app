@@ -1,28 +1,24 @@
-import { Topic } from "../../interfaces/topic";
+import { useEffect } from "react";
+import { useTopics } from "../../core/hooks/use_topics";
+import { useTopicsDispatch } from "../../core/hooks/use_topics_dispatch";
+import { Action, ActionType } from "../../core/reducers/topic_reducer";
+import { TopicService } from "../../core/services/topic_service";
 import { TopicListItem } from "../TopicListITem";
 import { ListContainer } from "./style";
 
+export function TopicList() {
+  const dispatch = useTopicsDispatch() as React.Dispatch<Action>;
+  const topics = useTopics();
 
-interface TopicsListProps {
-    topics: Topic[];
-    changeActive: (topic: Topic) => void;
-    likeTopic: (topic: Topic) => void;
-    dislikeTopic: (topic: Topic) => void;
-}
+  useEffect(() => {
+    TopicService.getTopics().then((topics) => dispatch({ type: ActionType.Loaded, payload: { topics: topics } }));
+  }, []);
 
-
-export function TopicList({topics, changeActive, likeTopic, dislikeTopic}: TopicsListProps) {
-    return (
-        <ListContainer style={{}}>
-            {topics.map((topic) => (
-          <TopicListItem
-            key={topic.id}
-            topic={topic}
-            changeActive={changeActive}
-            likeTopic={likeTopic}
-            dislikeTopic={dislikeTopic}
-          />
-        ))}
-        </ListContainer>
-    )
+  return (
+    <ListContainer style={{}}>
+      {topics!.map((topic) => (
+        <TopicListItem key={topic.id} topic={topic} />
+      ))}
+    </ListContainer>
+  );
 }
